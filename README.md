@@ -4,6 +4,12 @@ Offline-first data engine for Dart and Flutter. A durable outbox and a
 stale-while-revalidate cache that agree with each other. See
 [packages/offline_cache_sync/README.md](packages/offline_cache_sync/README.md).
 
+## Architecture
+
+![offline_cache_sync architecture](doc/architecture.png)
+
+Reads and writes both go through the **overlay**: the server-confirmed base plus the durable log of pending local ops. Refreshes replace only the base, and the outbox removes an op only once the server acknowledges it. Everything below the engine is a port, so storage and transport are swappable. The diagram source is [doc/architecture.mmd](doc/architecture.mmd).
+
 | Package | What it is | Status |
 | --- | --- | --- |
 | [`offline_cache_sync`](packages/offline_cache_sync) | Pure-Dart core engine, zero runtime deps | 0.1.0 |

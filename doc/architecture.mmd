@@ -1,0 +1,58 @@
+%%{init: {"theme": "base", "flowchart": {"nodeSpacing": 40, "rankSpacing": 55}, "themeVariables": {"fontFamily": "Helvetica, Arial, sans-serif", "fontSize": "15px", "primaryColor": "#EEF2FF", "primaryBorderColor": "#6366F1", "primaryTextColor": "#1E1B4B", "lineColor": "#64748B", "clusterBkg": "#F8FAFC", "clusterBorder": "#CBD5E1"}}}%%
+flowchart TB
+  subgraph API["Your app talks to the public API"]
+    direction LR
+    res["<b>Resource&lt;K, T&gt;</b><br/>codec · mutations · policies"]
+    repo["<b>Repository&lt;K, T&gt;</b><br/>get · watch · peek · mutate"]
+    res -- configures --> repo
+  end
+
+  subgraph ENGINE["OfflineEngine · pure Dart, zero dependencies"]
+    direction LR
+    read["<b>Read path</b><br/>fresh · SWR · stale-if-error<br/>stale-if-offline · dedup · ETag"]
+    overlay["<b>Overlay</b><br/>view = server base<br/>+ pending ops"]
+    write["<b>Outbox runner</b><br/>per-entity order · retry<br/>idempotency keys · conflicts"]
+    read --> overlay
+    write --> overlay
+  end
+
+  subgraph SUPPORT["Always on"]
+    direction LR
+    recover["<b>Crash recovery</b><br/>lease · resend in-flight ops"]
+    retain["<b>Retention</b><br/>LRU · TTL · size<br/>never evicts dirty or pinned"]
+    recover ~~~ retain
+  end
+
+  subgraph PORTS["Ports · interfaces you can swap"]
+    direction LR
+    store["<b>LocalStore</b><br/>records + op log<br/>in ONE transaction"]
+    remote["<b>RemoteSource</b><br/><b>MutationSender</b>"]
+    rt["<b>Clock · Scheduler</b><br/><b>Connectivity</b>"]
+    sink["<b>EventSink</b><br/>events · metrics"]
+    store ~~~ remote ~~~ rt ~~~ sink
+  end
+
+  subgraph ADAPTERS["Adapters"]
+    direction LR
+    mem["InMemoryLocalStore<br/><i>in 0.1.0</i>"]
+    sql["SQLite / Drift store<br/><i>planned</i>"]
+    net["Your REST client<br/>http / Dio helpers <i>planned</i>"]
+    kit["offline_cache_sync_test<br/>fakes · crash injection"]
+    mem ~~~ sql ~~~ net ~~~ kit
+  end
+
+  API --> ENGINE
+  ENGINE --> SUPPORT
+  SUPPORT --> PORTS
+  PORTS --> ADAPTERS
+
+  classDef engine fill:#E0E7FF,stroke:#4F46E5,color:#1E1B4B
+  classDef core fill:#C7D2FE,stroke:#4338CA,color:#1E1B4B,stroke-width:2px
+  classDef port fill:#ECFDF5,stroke:#10B981,color:#064E3B
+  classDef adapter fill:#FFF7ED,stroke:#F97316,color:#7C2D12
+  classDef appNode fill:#F1F5F9,stroke:#334155,color:#0F172A
+  class read,write,recover,retain engine
+  class overlay core
+  class store,remote,rt,sink port
+  class mem,sql,net,kit adapter
+  class repo,res appNode

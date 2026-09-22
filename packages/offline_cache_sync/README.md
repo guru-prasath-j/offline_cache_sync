@@ -12,6 +12,12 @@ The core is pure Dart with **zero runtime dependencies**: no Flutter, Dio, Hive,
 
 > Status: 0.1.0, the API may still change before 1.0. The SQLite/Drift stores, http/Dio helpers and Flutter widgets ship as separate `offline_cache_sync_*` packages.
 
+## Architecture
+
+![offline_cache_sync architecture](https://raw.githubusercontent.com/guru-prasath-j/offline_cache_sync/main/doc/architecture.png)
+
+The **overlay** sits at the centre: every read returns the server-confirmed base with the pending local ops folded on top. The read path (freshness, SWR, dedup, ETag) only replaces the base. The outbox runner (per-entity order, retries, idempotency keys, conflicts) only removes an op once the server acknowledges it. Crash recovery and retention run alongside. Storage, network, time and connectivity are ports, so you plug in your own database and API client.
+
 ## When NOT to use this
 
 - **You control the backend and can run a sync service:** use [PowerSync](https://pub.dev/packages/powersync).
