@@ -1,0 +1,23 @@
+name: offline_cache_sync_test
+description: >-
+  Test kit for offline_cache_sync: fake clock/scheduler/connectivity, a scripted
+  fake server with idempotency, a crash-injecting store, and the LocalStore
+  conformance suite every storage adapter must pass.
+version: 0.1.0
+repository: https://github.com/guru-prasath-j/offline_cache_sync/tree/main/packages/offline_cache_sync_test
+issue_tracker: https://github.com/guru-prasath-j/offline_cache_sync/issues
+topics:
+  - offline-first
+  - testing
+  - sync
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  offline_cache_sync: ^0.1.0
+  test: ^1.25.0
+
+dev_dependencies:
+  lints: ^5.0.0

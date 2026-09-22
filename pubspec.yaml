@@ -1,0 +1,12 @@
+name: offline_cache_sync_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+workspace:
+  - packages/offline_cache_sync
+  - packages/offline_cache_sync_test
+
+dev_dependencies:
+  lints: ^5.0.0
