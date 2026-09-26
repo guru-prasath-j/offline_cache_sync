@@ -1,3 +1,7 @@
+## 0.1.1
+
+- Shorten the pubspec description to fit the pub.dev 60-180 character guideline. No code changes.
+
 ## 0.1.0
 
 - `FakeClock` (clock + scheduler), `FakeConnectivity`, a `FakeServer` with idempotency and version checks, a crash-injecting `CrashingStore` and an `EngineHarness`.

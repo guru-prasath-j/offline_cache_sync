@@ -10,7 +10,7 @@ Offline-first data engine for Dart and Flutter. It keeps a **durable outbox** an
 
 The core is pure Dart with **zero runtime dependencies**: no Flutter, Dio, Hive, Isar, Drift or SQLite. Storage and transport are ports you plug in.
 
-> Status: 0.1.0, the API may still change before 1.0. The SQLite/Drift stores, http/Dio helpers and Flutter widgets ship as separate `offline_cache_sync_*` packages.
+> Status: 0.1.1, the API may still change before 1.0. The SQLite/Drift stores, http/Dio helpers and Flutter widgets ship as separate `offline_cache_sync_*` packages.
 
 ## Architecture
 
