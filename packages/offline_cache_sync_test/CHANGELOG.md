@@ -1,6 +1,7 @@
 ## 0.1.1
 
 - Shorten the pubspec description to fit the pub.dev 60-180 character guideline. No code changes.
+- Add an example.
 
 ## 0.1.0
 
