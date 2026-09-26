@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sdk: [3.6.0, stable]
+        sdk: [3.10.0, stable]
     steps:
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
@@ -22,5 +22,7 @@ jobs:
         working-directory: packages/offline_cache_sync
       - run: dart test
         working-directory: packages/offline_cache_sync_test
+      - run: dart test
+        working-directory: packages/offline_cache_sync_sqlite
       - run: INVARIANT_RUNS=500 dart test -t invariants
         working-directory: packages/offline_cache_sync_test

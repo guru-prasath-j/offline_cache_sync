@@ -14,7 +14,7 @@ Reads and writes both go through the **overlay**: the server-confirmed base plus
 | --- | --- | --- |
 | [`offline_cache_sync`](packages/offline_cache_sync) | Pure-Dart core engine, zero runtime deps | 0.1.1 |
 | [`offline_cache_sync_test`](packages/offline_cache_sync_test) | Fakes, crash injection, store conformance suite | 0.1.1 |
-| `offline_cache_sync_sqlite` | `LocalStore` on package:sqlite3 | planned |
+| [`offline_cache_sync_sqlite`](packages/offline_cache_sync_sqlite) | `LocalStore` on package:sqlite3 | 0.1.0 |
 | `offline_cache_sync_drift` | `LocalStore` inside your Drift database | planned |
 | `offline_cache_sync_http` / `_dio` | Conditional GETs, Idempotency-Key, If-Match, error classification | planned |
 | `offline_cache_sync_flutter` | `OfflineScope`, `SnapshotBuilder`, `PendingBadge`, debug panel | planned |
