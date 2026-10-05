@@ -15,6 +15,7 @@ import 'mutex.dart';
 /// object outlives any engine using it, so tests simulate an app restart by
 /// opening a new engine on the same store.
 final class InMemoryLocalStore implements LocalStore {
+  /// Creates an empty store.
   InMemoryLocalStore();
 
   final Mutex _mutex = Mutex();

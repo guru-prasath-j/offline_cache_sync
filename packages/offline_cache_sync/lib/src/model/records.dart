@@ -3,10 +3,14 @@ import 'keys.dart';
 /// Opaque server version of an entity. Prefer [revision] or a strong [etag];
 /// [updatedAt] is the weakest signal (clock skew, millisecond collisions).
 final class Version {
+  /// Creates a version. Supply whichever signals your server provides.
   const Version({this.etag, this.revision, this.updatedAt});
 
+  /// Entity tag, compared for equality only.
   final String? etag;
+  /// Monotonic revision number, the strongest ordering signal.
   final int? revision;
+  /// Server modification time, the weakest ordering signal.
   final DateTime? updatedAt;
 
   /// Returns true when [other] is known to be strictly older than this.
@@ -23,12 +27,14 @@ final class Version {
   /// Returns true when [other] is known to be strictly newer than this.
   bool isOlderThan(Version? other) => other != null && other.isNewerThan(this);
 
+  /// Converts the version to a JSON-compatible map.
   Map<String, Object?> toJson() => {
         if (etag != null) 'etag': etag,
         if (revision != null) 'revision': revision,
         if (updatedAt != null) 'updatedAt': updatedAt!.toUtc().toIso8601String(),
       };
 
+  /// Reads a version written by [toJson]; null for anything else.
   static Version? fromJson(Object? json) {
     if (json is! Map) return null;
     final u = json['updatedAt'];
@@ -52,18 +58,24 @@ final class Version {
 
 /// HTTP validators used for conditional requests (304 Not Modified).
 final class Validators {
+  /// Creates validators.
   const Validators({this.etag, this.lastModified});
 
+  /// Value of the `ETag` response header, sent back as `If-None-Match`.
   final String? etag;
+  /// Value of the `Last-Modified` header, sent back as `If-Modified-Since`.
   final String? lastModified;
 
+  /// Whether neither validator is present.
   bool get isEmpty => etag == null && lastModified == null;
 
+  /// Converts the validators to a JSON-compatible map.
   Map<String, Object?> toJson() => {
         if (etag != null) 'etag': etag,
         if (lastModified != null) 'lastModified': lastModified,
       };
 
+  /// Reads validators written by [toJson]; null for anything else.
   static Validators? fromJson(Object? json) {
     if (json is! Map) return null;
     return Validators(etag: json['etag'] as String?, lastModified: json['lastModified'] as String?);
@@ -73,6 +85,7 @@ final class Validators {
 /// A server-confirmed base value plus the metadata the engine needs for
 /// freshness and retention. Immutable.
 final class StoredRecord {
+  /// Creates a record.
   const StoredRecord({
     required this.key,
     required this.payload,
@@ -89,6 +102,7 @@ final class StoredRecord {
     this.pinned = false,
   });
 
+  /// Which entity this is.
   final RecordKey key;
 
   /// JSON-compatible encoded value (the output of `Codec.encode`).
@@ -103,7 +117,9 @@ final class StoredRecord {
   /// response body) and should be revalidated on the next read.
   final bool invalidated;
 
+  /// Server version of [payload], if known.
   final Version? serverVersion;
+  /// Validators for the next conditional fetch.
   final Validators? validators;
 
   /// Last time the server confirmed this value (200 or 304).
@@ -112,8 +128,11 @@ final class StoredRecord {
   /// `Cache-Control: max-age` sent by the server, if any.
   final Duration? httpMaxAge;
 
+  /// Last time the app read this record; drives LRU eviction.
   final DateTime lastAccessedAt;
+  /// How many times the app read this record.
   final int accessCount;
+  /// Approximate encoded size, counted against `RetentionPolicy.maxBytes`.
   final int sizeBytes;
 
   /// Retention priority: higher values are kept longer.
@@ -122,6 +141,8 @@ final class StoredRecord {
   /// Explicitly pinned by the app ("available offline"). Never evicted.
   final bool pinned;
 
+  /// Returns a copy with the given fields replaced. Nullable fields can be
+  /// set to null explicitly.
   StoredRecord copyWith({
     Object? payload = _unset,
     bool? tombstone,

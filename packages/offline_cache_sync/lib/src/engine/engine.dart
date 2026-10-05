@@ -124,23 +124,37 @@ final class OfflineEngine {
     return engine;
   }
 
+  /// Durable storage for records, the outbox and engine state.
   final LocalStore store;
+  /// Source of time.
   final Clock clock;
+  /// Schedules retries and background work.
   final Scheduler scheduler;
+  /// Network reachability hints.
   final ConnectivityProvider connectivity;
+  /// Mints idempotency keys at enqueue time.
   final IdempotencyProvider idempotency;
+  /// Decides when to retry failed sends.
   final RetryPolicy retry;
+  /// Eviction budgets.
   final RetentionPolicy retention;
+  /// Receives every [SyncEvent], if set.
   final EventSink? eventSink;
+  /// Identifies this engine instance in leases and in-flight markers.
   final String runnerId;
+  /// Whether this engine takes the single-writer lease.
   final LeaseMode leaseMode;
+  /// How long a lease stays valid without renewal.
   final Duration leaseTtl;
+  /// Maximum operations sent at once (across different entities).
   final int maxConcurrentSends;
+  /// How often buffered access statistics are written to the store.
   final Duration accessFlushInterval;
 
   final Map<String, Resource<Object?, Object?>> _resources;
   final UuidV4 _uuid;
 
+  /// Running counters, updated from every event.
   final SyncMetrics metrics = SyncMetrics();
   final StreamController<SyncEvent> _events = StreamController<SyncEvent>.broadcast();
 
@@ -1182,6 +1196,7 @@ final class Repository<K, T> {
   Repository._(this._engine, this.resource);
 
   final OfflineEngine _engine;
+  /// The resource this repository reads and writes.
   final Resource<K, T> resource;
 
   /// Reads [id] following the freshness windows (fresh / SWR / fetch /
@@ -1208,6 +1223,7 @@ final class Repository<K, T> {
   /// Pins [id] so it is never evicted.
   Future<void> pin(K id, {bool pinned = true}) => _engine.setPinned(resource.keyOf(id), pinned);
 
+  /// The storage key for entity [id].
   RecordKey keyOf(K id) => resource.keyOf(id);
 }
 
@@ -1216,7 +1232,9 @@ final class OpHandle {
   OpHandle._(this._engine, this.id, this.entity);
 
   final OfflineEngine _engine;
+  /// The operation's id.
   final OpId id;
+  /// The record the operation changes.
   final RecordKey entity;
 
   /// Current stored state (null once removed after success or discard).
@@ -1226,7 +1244,11 @@ final class OpHandle {
   /// dropped by a conflict, parked, failed, dead-lettered or discarded.
   Future<OpOutcome> get done => _engine._awaitOutcome(id);
 
+  /// Puts a `failed`, `deadLetter` or `conflicted` operation back to
+  /// `pending` so it is sent again. Does nothing in any other state.
   Future<void> retry() => _engine.retryOp(id);
 
+  /// Removes the operation unless it is in flight; the optimistic change is
+  /// rolled back. Returns false if it is in flight or already gone.
   Future<bool> discard() => _engine.discardOp(id);
 }

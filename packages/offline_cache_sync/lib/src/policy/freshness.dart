@@ -32,6 +32,8 @@ enum HttpDirectiveMode {
 /// The four freshness windows of section 6.1, measured from `fetchedAt`
 /// (the last 200 or 304).
 final class FreshnessWindows {
+  /// Creates freshness windows. Defaults: stale after 30 s, expired after
+  /// 24 h, stale-if-error for 7 days, stale-if-offline without limit.
   const FreshnessWindows({
     this.staleAfter = const Duration(seconds: 30),
     this.expireAfter = const Duration(hours: 24),
@@ -40,7 +42,9 @@ final class FreshnessWindows {
     this.httpMode = HttpDirectiveMode.advisory,
   });
 
+  /// Age after which a value is served but revalidated in the background.
   final Duration staleAfter;
+  /// Age after which a value must be refetched before it is served.
   final Duration expireAfter;
 
   /// Extra window after [expireAfter] during which an expired value may be
@@ -51,8 +55,10 @@ final class FreshnessWindows {
   /// served while offline. Null means unlimited (the offline-first default).
   final Duration? staleIfOffline;
 
+  /// How server `Cache-Control: max-age` combines with these windows.
   final HttpDirectiveMode httpMode;
 
+  /// Returns a copy with the given windows replaced.
   FreshnessWindows copyWith({
     Duration? staleAfter,
     Duration? expireAfter,

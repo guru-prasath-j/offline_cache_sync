@@ -23,6 +23,8 @@ enum Delivery {
 /// Definition of one kind of entity: key, codec, remote access, mutations and
 /// policies. Create one per entity type and register it with the engine.
 final class Resource<K, T> {
+  /// Creates a resource definition. [mutations] maps each custom mutation
+  /// kind to the decoder that rebuilds it after a restart.
   Resource({
     required this.type,
     required this.codec,
@@ -56,11 +58,17 @@ final class Resource<K, T> {
 
   /// Resource type used in keys (`user` in `user:123`). No `:` allowed.
   final String type;
+  /// Converts entities to and from JSON-compatible values.
   final Codec<T> codec;
+  /// Reads entities from the server.
   final RemoteSource<K> remote;
+  /// Sends queued operations to the server.
   final MutationSender sender;
+  /// When cached values are fresh, stale or expired.
   final FreshnessWindows freshness;
+  /// Resolves server-reported conflicts. Defaults to parking them.
   final ConflictResolver<T> conflicts;
+  /// What to do with ambiguous sends of ops that carry no idempotency key.
   final Delivery delivery;
 
   /// Mint an idempotency key for every op (recommended).
@@ -70,8 +78,11 @@ final class Resource<K, T> {
   final K Function(String id)? _idFromString;
   late final Map<String, MutationDecoder<T>> _decoders;
 
+  /// The storage key for entity [id].
   RecordKey keyOf(K id) => RecordKey(type, _idToString?.call(id) ?? id.toString());
 
+  /// The entity id stored in [key]. Needs `idFromString` unless ids are
+  /// strings.
   K idOf(RecordKey key) {
     final f = _idFromString;
     if (f != null) return f(key.id);
@@ -79,6 +90,7 @@ final class Resource<K, T> {
     throw StateError('Resource "$type" needs idFromString to parse ids of type $K');
   }
 
+  /// Whether a decoder is registered for mutation [kind].
   bool knowsKind(String kind) => _decoders.containsKey(kind);
 
   /// Rebuilds a mutation from its frozen form. Throws if [kind] is unknown.
@@ -88,6 +100,7 @@ final class Resource<K, T> {
     return d(json);
   }
 
+  /// Decodes a stored payload; null stays null.
   T? decode(Object? json) => json == null ? null : codec.decode(json);
 
   // ---- engine helpers ------------------------------------------------------

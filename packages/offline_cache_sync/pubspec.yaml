@@ -1,7 +1,7 @@
 name: offline_cache_sync
 description: >-
   Offline-first data engine for Dart and Flutter: a durable outbox plus a stale-while-revalidate cache. Pending edits survive restarts, eviction and retries.
-version: 0.1.1
+version: 0.1.2
 repository: https://github.com/guru-prasath-j/offline_cache_sync/tree/main/packages/offline_cache_sync
 issue_tracker: https://github.com/guru-prasath-j/offline_cache_sync/issues
 topics:

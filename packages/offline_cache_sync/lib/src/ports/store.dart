@@ -14,26 +14,35 @@ import '../model/records.dart';
 ///
 /// `offline_cache_sync_test` ships a conformance suite for these rules.
 abstract interface class LocalStore {
+  /// Runs [body] in one atomic transaction and returns its result.
   Future<R> transaction<R>(Future<R> Function(StoreTxn tx) body);
 
   /// Keys touched by each committed transaction (records or ops).
   Stream<Set<RecordKey>> get committedChanges;
 
+  /// Releases resources. The store is unusable afterwards.
   Future<void> close();
 }
 
 /// Tables available inside one transaction.
 abstract interface class StoreTxn {
+  /// Cached records.
   RecordTable get records;
+  /// The outbox of pending and finished operations.
   OpLog get ops;
+  /// Engine bookkeeping.
   MetaTable get meta;
 }
 
+/// Cached records, keyed by [RecordKey].
 abstract interface class RecordTable {
+  /// The record for [key], or null.
   Future<StoredRecord?> get(RecordKey key);
 
+  /// Inserts or replaces [record].
   Future<void> put(StoredRecord record);
 
+  /// Deletes the record for [key], if any.
   Future<void> delete(RecordKey key);
 
   /// Updates access statistics for [keys] (batched by the engine).
@@ -43,17 +52,22 @@ abstract interface class RecordTable {
   /// blocks the entity. Ordered by `lastAccessedAt` ascending.
   Future<List<StoredRecord>> evictionCandidates({required int limit});
 
+  /// Record count and total size.
   Future<StoreStats> stats();
 }
 
+/// The durable outbox of operations.
 abstract interface class OpLog {
+  /// Adds a new op.
   Future<void> append(Operation op);
 
   /// Replaces an existing op (same id). Throws [StateError] if it is missing.
   Future<void> replace(Operation op);
 
+  /// The op with [id], or null.
   Future<Operation?> get(OpId id);
 
+  /// Deletes the op with [id], if any.
   Future<void> remove(OpId id);
 
   /// All ops of [key] that are not terminal, ordered by `seq`.
@@ -66,23 +80,30 @@ abstract interface class OpLog {
   /// Ops with the given statuses, ordered by `seq`.
   Future<List<Operation>> where(Set<OpStatus> statuses, {int? limit});
 
+  /// Number of ops in each status.
   Future<Map<OpStatus, int>> countByStatus();
 }
 
 /// Small key/value table for engine bookkeeping (sequence, lease, epochs).
 abstract interface class MetaTable {
+  /// The value stored under [key], or null.
   Future<Object?> get(String key);
 
+  /// Stores a JSON-compatible [value] under [key].
   Future<void> put(String key, Object? value);
 
   /// Atomically increments and returns the next value of counter [name].
   Future<int> next(String name);
 }
 
+/// Size of the record table.
 final class StoreStats {
+  /// Creates stats.
   const StoreStats({required this.records, required this.bytes});
 
+  /// Number of records.
   final int records;
+  /// Sum of the records' `sizeBytes`.
   final int bytes;
 
   @override

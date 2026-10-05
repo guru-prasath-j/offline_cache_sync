@@ -6,6 +6,7 @@ import '../model/records.dart';
 /// Everything a resolver needs. Conflicts are detected by the SERVER
 /// (409 / 412); the client never guesses.
 final class Conflict<T> {
+  /// Creates a conflict description. The engine builds these.
   const Conflict({
     required this.op,
     required this.base,
@@ -15,6 +16,7 @@ final class Conflict<T> {
     this.serverVersion,
   });
 
+  /// The operation the server refused.
   final Operation op;
 
   /// The value the user edited against (the stored base before this op).
@@ -26,38 +28,51 @@ final class Conflict<T> {
   /// The current server value (null if unknown or deleted).
   final T? server;
 
+  /// Whether the entity no longer exists on the server.
   final bool serverDeleted;
+  /// Current server version, if known.
   final Version? serverVersion;
 }
 
+/// What a [ConflictResolver] decided: [TakeServer], [ResendLocal],
+/// [MergeWith] or [Park].
 sealed class Resolution<T> {
+  /// Base constructor for subclasses.
   const Resolution();
 }
 
 /// Drop the op; the server value becomes the base.
 final class TakeServer<T> extends Resolution<T> {
+  /// Creates a take-server resolution.
   const TakeServer();
 }
 
 /// Rebase the op on the server version and send it again ("client wins").
 final class ResendLocal<T> extends Resolution<T> {
+  /// Creates a resend-local resolution.
   const ResendLocal();
 }
 
 /// Replace the op by a full-entity write of [value] against the server
 /// version. The replacement gets a NEW idempotency key (different payload).
 final class MergeWith<T> extends Resolution<T> {
+  /// Creates a merge resolution writing [value].
   const MergeWith(this.value);
 
+  /// The merged entity to write.
   final T value;
 }
 
 /// Keep the op in `conflicted` and let the app/user decide.
 final class Park<T> extends Resolution<T> {
+  /// Creates a park resolution.
   const Park();
 }
 
+/// Resolves server-reported conflicts for one resource. See
+/// [ConflictStrategies] for ready-made resolvers.
 abstract interface class ConflictResolver<T> {
+  /// Decides how to resolve [conflict].
   FutureOr<Resolution<T>> resolve(Conflict<T> conflict);
 }
 

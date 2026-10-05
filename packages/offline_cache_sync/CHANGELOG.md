@@ -1,3 +1,7 @@
+## 0.1.2
+
+- Document the public API: every event, port (`RemoteSource`, `MutationSender`, `LocalStore` tables, `Clock`, `Scheduler`, `Codec`), record, operation, policy and conflict type now has dartdoc. API documentation coverage on pub.dev rises from about 41% to over 90%. No code changes.
+
 ## 0.1.1
 
 - Shorten the pubspec description to fit the pub.dev 60-180 character guideline. No code changes.

@@ -17,6 +17,7 @@ enum DataSource {
 /// Thrown into [Snapshot.error] when an entity is needed, the device is
 /// offline and nothing usable is cached.
 final class OfflineMiss implements Exception {
+  /// Creates the error.
   const OfflineMiss();
 
   @override
@@ -26,6 +27,7 @@ final class OfflineMiss implements Exception {
 /// The result of a read: the folded value (server base plus pending local
 /// writes) and everything the UI needs to present it honestly.
 final class Snapshot<T> {
+  /// Creates a snapshot. The engine builds these.
   const Snapshot({
     required this.key,
     required this.value,
@@ -41,6 +43,7 @@ final class Snapshot<T> {
     this.fetchedAt,
   });
 
+  /// Which entity this snapshot describes.
   final RecordKey key;
 
   /// `fold(base, pendingOps)`. Null when the entity does not exist (never
@@ -49,6 +52,7 @@ final class Snapshot<T> {
 
   /// Freshness of the server-confirmed BASE (pending writes don't change it).
   final Freshness freshness;
+  /// Where the base came from for this read.
   final DataSource source;
 
   /// Number of pending / in-flight / parked ops folded into [value].
@@ -77,7 +81,9 @@ final class Snapshot<T> {
   /// When the server last confirmed the base.
   final DateTime? fetchedAt;
 
+  /// Whether [value] is non-null.
   bool get hasValue => value != null;
+  /// Whether local writes are still waiting for the server.
   bool get hasPendingWrites => pendingWrites > 0;
 
   /// The value, or throws [error] / [StateError].

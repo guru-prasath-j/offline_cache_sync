@@ -42,17 +42,21 @@ enum OpStatus {
 
 /// A classified error, safe to persist (messages must already be redacted).
 final class ErrorInfo {
+  /// Creates error info.
   const ErrorInfo({required this.code, this.httpStatus, this.message, this.ambiguous = false});
 
   /// Machine-readable code: `timeout`, `http_503`, `validation`, ...
   final String code;
+  /// HTTP status code, if the error came from an HTTP response.
   final int? httpStatus;
+  /// Redacted, human-readable detail. Never put PII here: it is persisted.
   final String? message;
 
   /// True when the server may have applied the request (e.g. a timeout after
   /// the request was written). Drives the `Delivery` rules.
   final bool ambiguous;
 
+  /// Converts the error to a JSON-compatible map.
   Map<String, Object?> toJson() => {
         'code': code,
         if (httpStatus != null) 'httpStatus': httpStatus,
@@ -60,6 +64,7 @@ final class ErrorInfo {
         if (ambiguous) 'ambiguous': true,
       };
 
+  /// Reads error info written by [toJson]; null for anything else.
   static ErrorInfo? fromJson(Object? json) {
     if (json is! Map) return null;
     return ErrorInfo(
@@ -76,6 +81,7 @@ final class ErrorInfo {
 
 /// One durable entry in the outbox. Immutable; transitions produce copies.
 final class Operation {
+  /// Creates an operation. The engine creates these; apps rarely need to.
   const Operation({
     required this.id,
     required this.seq,
@@ -98,12 +104,14 @@ final class Operation {
     this.serverVersion,
   });
 
+  /// Unique id of the operation.
   final OpId id;
 
   /// Global monotonic sequence allocated by the store inside the enqueue
   /// transaction. Defines fold order and per-entity send order.
   final int seq;
 
+  /// The record this operation changes.
   final RecordKey entity;
 
   /// Registered mutation kind, e.g. `user.rename`.
@@ -113,6 +121,7 @@ final class Operation {
   /// objects, so retries send byte-identical payloads.
   final Object? payload;
 
+  /// Minted once at enqueue and reused on every attempt.
   final IdempotencyKey? idempotencyKey;
 
   /// Server version the user edited against (for If-Match / conflicts).
@@ -124,23 +133,35 @@ final class Operation {
   /// Ops that must succeed before this one may be sent.
   final List<OpId> dependsOn;
 
+  /// Where the operation is in its lifecycle.
   final OpStatus status;
+  /// Send attempts made so far.
   final int attempts;
 
   /// True once the op has ever been marked in flight. Coalescing and
   /// payload rewrites are forbidden after that.
   final bool everSent;
 
+  /// When the operation was enqueued.
   final DateTime createdAt;
+  /// When the operation last changed.
   final DateTime updatedAt;
+  /// Earliest time of the next send attempt, if a retry is scheduled.
   final DateTime? nextAttemptAt;
+  /// Runner id of the engine that marked the operation in flight.
   final String? leaseOwner;
+  /// When the current attempt started, while in flight.
   final DateTime? inFlightSince;
+  /// The most recent failure, if any.
   final ErrorInfo? lastError;
+  /// Server version reported by the last response, if any.
   final Version? serverVersion;
 
+  /// Whether the operation may be sent at [now].
   bool isDue(DateTime now) => nextAttemptAt == null || !nextAttemptAt!.isAfter(now);
 
+  /// Returns a copy with the given fields replaced. Nullable fields can be
+  /// set to null explicitly.
   Operation copyWith({
     Object? payload = _unset,
     String? kind,

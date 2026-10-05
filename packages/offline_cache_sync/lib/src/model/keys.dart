@@ -37,10 +37,13 @@ extension type const IdempotencyKey(String value) {}
 
 /// Generates RFC 4122 version-4 UUIDs without any package dependency.
 final class UuidV4 {
+  /// Creates a generator. Defaults to `Random.secure()`; pass [random] for
+  /// deterministic tests.
   UuidV4([Random? random]) : _random = random ?? Random.secure();
 
   final Random _random;
 
+  /// Returns a new UUID such as `f47ac10b-58cc-4372-a567-0e02b2c3d479`.
   String next() {
     final b = List<int>.generate(16, (_) => _random.nextInt(256));
     b[6] = (b[6] & 0x0f) | 0x40; // version 4

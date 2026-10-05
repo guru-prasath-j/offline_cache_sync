@@ -8,6 +8,7 @@ import '../model/records.dart';
 /// Pins are enforced by the engine and store, not by this policy: records with
 /// blocking ops, pinned records and watched records never reach [score].
 final class RetentionPolicy {
+  /// Creates a policy. With no arguments nothing is evicted.
   const RetentionPolicy({
     this.maxEntries,
     this.maxBytes,
@@ -19,7 +20,9 @@ final class RetentionPolicy {
   /// No limits: nothing is ever evicted automatically.
   const RetentionPolicy.unbounded() : this();
 
+  /// Maximum number of records, or null for no limit.
   final int? maxEntries;
+  /// Maximum total `StoredRecord.sizeBytes`, or null for no limit.
   final int? maxBytes;
 
   /// Records not accessed for longer than this are removed (subject to pins).
@@ -31,11 +34,14 @@ final class RetentionPolicy {
   /// Max records examined per eviction transaction.
   final int chunkSize;
 
+  /// Whether any limit is set.
   bool get isBounded => maxEntries != null || maxBytes != null || retainFor != null;
 
+  /// Whether [records] or [bytes] exceed a budget.
   bool overBudget(int records, int bytes) =>
       (maxEntries != null && records > maxEntries!) || (maxBytes != null && bytes > maxBytes!);
 
+  /// Whether eviction can stop: both counts are at or below the low watermark.
   bool underLowWatermark(int records, int bytes) =>
       (maxEntries == null || records <= (maxEntries! * lowWatermark).floor()) &&
       (maxBytes == null || bytes <= (maxBytes! * lowWatermark).floor());

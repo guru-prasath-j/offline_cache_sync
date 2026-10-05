@@ -13,6 +13,7 @@ import '../ports/runtime.dart';
 ///   rebuilds the mutation from it after a restart via the resource's
 ///   registered decoder for [kind].
 abstract class Mutation<T> {
+  /// Base constructor for subclasses.
   const Mutation();
 
   /// Registered kind, e.g. `user.rename`. Kinds starting with `$` are reserved.
@@ -31,14 +32,17 @@ typedef MutationDecoder<T> = Mutation<T> Function(Object? json);
 /// Built-in: replace the whole entity. Used by conflict merges and handy for
 /// "save form" style writes. Senders receive it with kind [kindName].
 final class Replace<T> extends Mutation<T> {
+  /// Replaces the entity with [value], encoded with [codec].
   Replace(T value, Codec<T> codec)
       : _encoded = codec.encode(value),
         _codec = codec;
 
+  /// Rebuilds a replace mutation from its frozen JSON.
   Replace.fromJson(Object? json, Codec<T> codec)
       : _encoded = json,
         _codec = codec;
 
+  /// Mutation kind of [Replace].
   static const kindName = r'$replace';
 
   final Object? _encoded;
@@ -56,8 +60,10 @@ final class Replace<T> extends Mutation<T> {
 
 /// Built-in: delete the entity. Senders receive it with kind [kindName].
 final class Delete<T> extends Mutation<T> {
+  /// Creates a delete mutation.
   const Delete();
 
+  /// Mutation kind of [Delete].
   static const kindName = r'$delete';
 
   @override
@@ -74,12 +80,16 @@ final class Delete<T> extends Mutation<T> {
 /// (a null value removes the field). Senders receive it with kind [kindName]
 /// and can map it to a PATCH.
 final class SetFields extends Mutation<Map<String, Object?>> {
+  /// Sets [fields] on the entity.
   const SetFields(this.fields);
 
+  /// Rebuilds a set-fields mutation from its frozen JSON.
   factory SetFields.fromJson(Object? json) => SetFields(Map<String, Object?>.from(json! as Map));
 
+  /// Mutation kind of [SetFields].
   static const kindName = r'$set';
 
+  /// Fields to set; a null value removes the field.
   final Map<String, Object?> fields;
 
   @override
