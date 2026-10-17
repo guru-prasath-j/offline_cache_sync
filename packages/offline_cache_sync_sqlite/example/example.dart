@@ -4,8 +4,8 @@
 // queued after the app is killed, and syncs on the next launch.
 import 'dart:io';
 
-import 'package:offline_cache_sync/offline_cache_sync.dart';
-import 'package:offline_cache_sync_sqlite/offline_cache_sync_sqlite.dart';
+import 'package:flutter_offline_cache_sync/offline_cache_sync.dart';
+import 'package:flutter_offline_cache_sync_sqlite/offline_cache_sync_sqlite.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 /// A toy backend. Replace with your http/Dio calls.

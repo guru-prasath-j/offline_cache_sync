@@ -1,6 +1,6 @@
 // Runnable with `dart run example/example.dart`: an in-memory "server" stands
 // in for your REST API so the example has no dependencies.
-import 'package:offline_cache_sync/offline_cache_sync.dart';
+import 'package:flutter_offline_cache_sync/offline_cache_sync.dart';
 
 /// A toy backend. Replace with your http/Dio calls.
 final class TodoApi implements RemoteSource<String>, MutationSender {

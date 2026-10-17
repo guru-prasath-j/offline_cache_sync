@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:offline_cache_sync/offline_cache_sync.dart';
+import 'package:flutter_offline_cache_sync/offline_cache_sync.dart';
 
 /// Scriptable [ConnectivityProvider].
 final class FakeConnectivity implements ConnectivityProvider {

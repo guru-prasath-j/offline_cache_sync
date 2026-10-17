@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:offline_cache_sync/offline_cache_sync.dart';
+import 'package:flutter_offline_cache_sync/offline_cache_sync.dart';
 import 'package:test/test.dart';
 
 void main() {

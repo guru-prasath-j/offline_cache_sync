@@ -1,3 +1,7 @@
+## 0.1.3
+
+- Published as `flutter_offline_cache_sync`: imports are `package:flutter_offline_cache_sync/...`. README and dartdoc use the new name. No code changes.
+
 ## 0.1.2
 
 - Document the public API: every event, port (`RemoteSource`, `MutationSender`, `LocalStore` tables, `Clock`, `Scheduler`, `Codec`), record, operation, policy and conflict type now has dartdoc. API documentation coverage on pub.dev rises from about 41% to over 90%. No code changes.

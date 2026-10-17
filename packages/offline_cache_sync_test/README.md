@@ -1,6 +1,6 @@
-# offline_cache_sync_test
+# flutter_offline_cache_sync_test
 
-Test kit for [offline_cache_sync](https://pub.dev/packages/offline_cache_sync).
+Test kit for [offline_cache_sync](https://pub.dev/packages/flutter_offline_cache_sync).
 
 - **`FakeClock`**: a deterministic clock and scheduler. Retry timers fire in `advance()`.
 - **`FakeConnectivity`**: flip online/offline from a test.

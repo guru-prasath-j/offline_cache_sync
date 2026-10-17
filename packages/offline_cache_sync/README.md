@@ -1,4 +1,4 @@
-# offline_cache_sync
+# flutter_offline_cache_sync
 
 Offline-first data engine for Dart and Flutter. It keeps a **durable outbox** and a
 **stale-while-revalidate cache** consistent with each other:
@@ -10,7 +10,7 @@ Offline-first data engine for Dart and Flutter. It keeps a **durable outbox** an
 
 The core is pure Dart with **zero runtime dependencies**: no Flutter, Dio, Hive, Isar, Drift or SQLite. Storage and transport are ports you plug in.
 
-> Status: 0.1.1, the API may still change before 1.0. The SQLite/Drift stores, http/Dio helpers and Flutter widgets ship as separate `offline_cache_sync_*` packages.
+> Status: 0.1.3, the API may still change before 1.0. The SQLite/Drift stores, http/Dio helpers and Flutter widgets ship as separate `offline_cache_sync_*` packages.
 
 ## Architecture
 
@@ -29,7 +29,7 @@ The **overlay** sits at the centre: every read returns the server-confirmed base
 ## Quick start
 
 ```dart
-import 'package:offline_cache_sync/offline_cache_sync.dart';
+import 'package:flutter_offline_cache_sync/offline_cache_sync.dart';
 
 // 1. Describe the entity: key, codec, how to fetch it, how to send ops.
 final todos = Resource<String, Map<String, Object?>>(
@@ -145,10 +145,10 @@ Ops are marked `inFlight` in a committed transaction *before* they are sent. On 
 
 ## Storage adapters
 
-Implement `LocalStore` from `package:offline_cache_sync/adapter_api.dart` and run the conformance suite:
+Implement `LocalStore` from `package:flutter_offline_cache_sync/adapter_api.dart` and run the conformance suite:
 
 ```dart
-import 'package:offline_cache_sync_test/offline_cache_sync_test.dart';
+import 'package:flutter_offline_cache_sync_test/offline_cache_sync_test.dart';
 
 void main() => runLocalStoreConformance('my store', () async => MyStore.inMemory());
 ```

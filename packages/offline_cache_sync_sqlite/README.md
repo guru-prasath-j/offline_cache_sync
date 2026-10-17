@@ -1,20 +1,20 @@
-# offline_cache_sync_sqlite
+# flutter_offline_cache_sync_sqlite
 
-SQLite storage for [`offline_cache_sync`](https://pub.dev/packages/offline_cache_sync). Records, the outbox and engine metadata live in one SQLite database, so an edit queued while offline is still there after the app is killed, and every engine transaction ("write locally and enqueue") commits or rolls back as a whole.
+SQLite storage for [`offline_cache_sync`](https://pub.dev/packages/flutter_offline_cache_sync). Records, the outbox and engine metadata live in one SQLite database, so an edit queued while offline is still there after the app is killed, and every engine transaction ("write locally and enqueue") commits or rolls back as a whole.
 
 Built on [`package:sqlite3`](https://pub.dev/packages/sqlite3), which bundles SQLite through build hooks: no `sqlite3_flutter_libs`, no native setup.
 
 ## Install
 
 ```shell
-dart pub add offline_cache_sync offline_cache_sync_sqlite sqlite3
+dart pub add flutter_offline_cache_sync flutter_offline_cache_sync_sqlite sqlite3
 ```
 
 ## Use
 
 ```dart
-import 'package:offline_cache_sync/offline_cache_sync.dart';
-import 'package:offline_cache_sync_sqlite/offline_cache_sync_sqlite.dart';
+import 'package:flutter_offline_cache_sync/offline_cache_sync.dart';
+import 'package:flutter_offline_cache_sync_sqlite/offline_cache_sync_sqlite.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 final store = SqliteLocalStore(sqlite3.open('${appSupportDir.path}/offline.db'));
@@ -40,4 +40,4 @@ The store works with any `CommonDatabase`, including WebAssembly databases from 
 
 ## Tested
 
-The package runs the `LocalStore` conformance suite from [`offline_cache_sync_test`](https://pub.dev/packages/offline_cache_sync_test) (atomicity, serialization, op ordering, eviction rules), plus round trips of every field and persistence across reopening a file database.
+The package runs the `LocalStore` conformance suite from [`offline_cache_sync_test`](https://pub.dev/packages/flutter_offline_cache_sync_test) (atomicity, serialization, op ordering, eviction rules), plus round trips of every field and persistence across reopening a file database.

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:offline_cache_sync/adapter_api.dart';
+import 'package:flutter_offline_cache_sync/adapter_api.dart';
 import 'package:sqlite3/common.dart' show Row;
 
 // Timestamps are stored as microseconds since the epoch and read back as UTC

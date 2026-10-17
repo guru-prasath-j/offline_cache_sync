@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:offline_cache_sync/offline_cache_sync.dart';
+import 'package:flutter_offline_cache_sync/offline_cache_sync.dart';
 
 /// Scripted failure for the next send.
 enum SendFailure {

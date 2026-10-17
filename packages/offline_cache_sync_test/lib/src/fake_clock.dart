@@ -1,4 +1,4 @@
-import 'package:offline_cache_sync/offline_cache_sync.dart';
+import 'package:flutter_offline_cache_sync/offline_cache_sync.dart';
 
 /// Deterministic time: implements both [Clock] and [Scheduler].
 ///

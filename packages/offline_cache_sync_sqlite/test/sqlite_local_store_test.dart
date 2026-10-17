@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:offline_cache_sync/adapter_api.dart';
-import 'package:offline_cache_sync_sqlite/offline_cache_sync_sqlite.dart';
+import 'package:flutter_offline_cache_sync/adapter_api.dart';
+import 'package:flutter_offline_cache_sync_sqlite/offline_cache_sync_sqlite.dart';
 import 'package:sqlite3/sqlite3.dart' show sqlite3;
 import 'package:test/test.dart';
 

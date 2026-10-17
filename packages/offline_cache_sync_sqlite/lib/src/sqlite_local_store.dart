@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:offline_cache_sync/adapter_api.dart';
+import 'package:flutter_offline_cache_sync/adapter_api.dart';
 import 'package:sqlite3/common.dart' show CommonDatabase;
 
 import 'mutex.dart';

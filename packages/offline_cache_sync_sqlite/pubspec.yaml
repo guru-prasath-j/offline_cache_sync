@@ -1,7 +1,7 @@
-name: offline_cache_sync_sqlite
+name: flutter_offline_cache_sync_sqlite
 description: >-
   SQLite storage for offline_cache_sync. Keeps records, the outbox and engine state in one database, so queued offline edits survive app restarts.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/guru-prasath-j/offline_cache_sync/tree/main/packages/offline_cache_sync_sqlite
 issue_tracker: https://github.com/guru-prasath-j/offline_cache_sync/issues
 topics:
@@ -16,10 +16,10 @@ environment:
   sdk: ^3.10.0
 
 dependencies:
-  offline_cache_sync: ^0.1.0
+  flutter_offline_cache_sync: ^0.1.3
   sqlite3: ^3.6.0
 
 dev_dependencies:
   lints: ^5.0.0
-  offline_cache_sync_test: ^0.1.0
+  flutter_offline_cache_sync_test: ^0.1.2
   test: ^1.25.0
